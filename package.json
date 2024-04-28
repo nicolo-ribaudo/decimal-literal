@@ -1,0 +1,13 @@
+{
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "@types/node": "^20.12.7",
+    "@yaffle/bigdecimal": "^1.0.36",
+    "tsx": "^4.7.3"
+  },
+  "scripts": {
+    "test:node": "tsx --test test/*.ts",
+    "test:deno": "deno test test/*.ts"
+  }
+}
