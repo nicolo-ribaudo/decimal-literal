@@ -9,7 +9,7 @@ The default export uses the global `Decimal` constructor, while
 
 ## Installation
 
-See [the JSR docs](https://jsr.io/docs/using-packages) on how to use packages
+See [the JSR docs](https://jsr.io/@nic/decimal-literal) on how to use packages
 from the JSR registry.
 
 ## Examples
