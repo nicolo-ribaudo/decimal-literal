@@ -47,3 +47,6 @@ test("#3", () => {
   assert(d`${zero1} + ${zero2}`.equals(d`0.3`));
 });
 
+test("#4", () => {
+  assert(d`0.1 + ${"0.2"}`.equals(d`0.3`));
+});

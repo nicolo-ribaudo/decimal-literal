@@ -42,7 +42,7 @@ export type { Decimal };
  */
 export type DecimalTag<Decimal> = (
   parts: TemplateStringsArray,
-  ...quasis: Decimal[]
+  ...quasis: Array<string | Decimal>
 ) => Decimal;
 
 /**
@@ -58,7 +58,10 @@ export function createDecimalTag<T extends new (value: string) => Decimal>(
     return evaluate(
       intersperse(
         map(parts.values(), (part) => tokenize(part)),
-        map(quasis.values(), (value) => ({ type: "Value", value }))
+        map(quasis.values(), (value) => ({
+          type: "Value",
+          value: typeof value === "string" ? new Decimal(value) : value,
+        }))
       ),
       Decimal
     ) as InstanceType<T>;
