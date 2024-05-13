@@ -31,33 +31,36 @@ export function evaluate(
 const EOF = { type: "EOF" } as const;
 type It = PeekableInfiniteIterator<EvaluatorToken | typeof EOF>;
 
-function evaluateAddSub(it: It, D?: DecimalConstructor): Decimal {
-  const left = evaluateMulDiv(it, D);
-  switch (it.peek()) {
-    case Tokens.Plus:
+type Evaluator = (it: It, D?: DecimalConstructor) => Decimal;
+type Operation = (left: Decimal, right: Decimal) => Decimal;
+function binaryEvaluator(
+  tokens: Map<TokenizerToken, (left: Decimal, right: Decimal) => Decimal>,
+  inner: Evaluator
+): Evaluator {
+  return function (it, D) {
+    let left = inner(it, D);
+    for (let op; (op = tokens.get(it.peek() as TokenizerToken)); ) {
       it.next();
-      return left.add(evaluateAddSub(it, D));
-    case Tokens.Minus:
-      it.next();
-      return left.subtract(evaluateAddSub(it, D));
-    default:
-      return left;
-  }
+      left = op(left, inner(it, D));
+    }
+    return left;
+  };
 }
 
-function evaluateMulDiv(it: It, D?: DecimalConstructor): Decimal {
-  const left = evaluateUnary(it, D);
-  switch (it.peek()) {
-    case Tokens.Mul:
-      it.next();
-      return left.times(evaluateUnary(it, D));
-    case Tokens.Div:
-      it.next();
-      return left.divide(evaluateUnary(it, D));
-    default:
-      return left;
-  }
-}
+const evaluateAddSub = binaryEvaluator(
+  new Map<TokenizerToken, Operation>([
+    [Tokens.Plus, (l, r) => l.add(r)],
+    [Tokens.Minus, (l, r) => l.subtract(r)],
+  ]),
+  binaryEvaluator(
+    new Map<TokenizerToken, Operation>([
+      [Tokens.Mul, (l, r) => l.times(r)],
+      [Tokens.Div, (l, r) => l.divide(r)],
+    ]),
+    evaluateUnary
+  )
+);
+
 
 function evaluateUnary(it: It, D?: DecimalConstructor): Decimal {
   switch (it.peek()) {

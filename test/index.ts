@@ -7,7 +7,8 @@ import assert from "node:assert";
 class Decimal {
   #val: BigDecimal;
   constructor(value: string | BigDecimal) {
-    this.#val = typeof value === "string" ? BigDecimal.BigDecimal(value) : value;
+    this.#val =
+      typeof value === "string" ? BigDecimal.BigDecimal(value) : value;
   }
   add(other: Decimal): Decimal {
     return new Decimal(BigDecimal.add(this.#val, other.#val));
@@ -49,4 +50,8 @@ test("#3", () => {
 
 test("#4", () => {
   assert(d`0.1 + ${"0.2"}`.equals(d`0.3`));
+});
+
+test("#5", () => {
+  assert(d`1 + 2 - 4`.equals(d`-1`));
 });
