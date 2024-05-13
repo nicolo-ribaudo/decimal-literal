@@ -25,6 +25,23 @@
  * d`0.1 + ${zeroPointTwo}`.equals(d`0.3`); // true
  * ```
  *
+ * A more complex example, coming from the
+ * {@link https://github.com/tc39/proposal-decimal | proposal's readme}:
+ *
+ * ```ts
+ * function calculateBill(items, tax) {
+ *   let total = d`0`;
+ *   for (let {price, count} of items) {
+ *     total = d`${total} + ${price} * ${count}`;
+ *   }
+ *   return d`${total} * (${tax} + 1)`;
+ * }
+ *
+ * let items = [{price: "1.25", count: "5"}, {price: "5.00", count: "1"}];
+ * let tax = "0.0735";
+ * console.log(calculateBill(items, tax).toString({ numDecimalDigits: 2 }));
+ * ```
+ *
  * @module
  */
 
